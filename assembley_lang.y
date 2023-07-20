@@ -8,37 +8,38 @@ void debug(char*);
 %}
 %union{
     char* str;
-    int cond;
-    int suffix;
+    int cond_t;
+    int suffix_t;
 }
 %token <str> OPCODE RD RN OP2
 %token <cond_t> COND
 %token <suffix_t> SUFFIX
+%token SEP
 
 %%
-lang :  lang inst      { }
-| inst                  { }
+lang :  inst lang      { printf("lang inst\n"); }
+| inst                  { printf("inst\n"); }
 ;
 
-inst : inst_op
-| inst_op op_1
-| inst_op op_1 op_2
-| inst_op op_1 op_2 op_3 
+inst : inst_op                      { printf("inst0\n"); } 
+| inst_op op_1                      { printf("inst1\n"); }
+| inst_op op_1 SEP op_2             { printf("inst2\n"); }
+| inst_op op_1 SEP op_2 SEP op_3    { printf("inst3\n"); }
 ;
 
-inst_op : OPCODE
-| OPCODE COND
-| OPCODE COND SUFFIX
-| OPCODE SUFFIX
+inst_op : OPCODE                    { printf("op(%s)\t", $1); }
+| OPCODE COND                       { printf("cond\t"); }
+| OPCODE COND SUFFIX                { printf("cond\t suff\t"); }
+| OPCODE SUFFIX                     { printf("suff\t"); }
 ;
 
-op_1 : RD
+op_1 : RD                           { printf("rd\t"); }
 ;
 
-op_2 : RN
+op_2 : RN                           { printf("rn\t"); }
 ;
 
-op_3 : OP2
+op_3 : OP2                          { printf("op2\n"); }
 ;
 
 
@@ -51,8 +52,9 @@ int main()
     while(!feof(fp))
     {
         fscanf(fp,"%s",name);
+        printf("read from: %s(%zu)\n", name, strlen(name));
         yyin=fopen(name,"r");
-        set_fvalid();
+        // set_fvalid();
         // yyin=fopen("input.p","r");
 
         yyparse();

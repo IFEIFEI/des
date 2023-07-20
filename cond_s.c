@@ -9,6 +9,7 @@ int parse_cond(char *op)
 int parse_s(char *op)
 {
     int len = strlen(op);
+    printf("%c", op[len-1]);
     return op[len-1] == 's' || op[len-1] == 'S';
 }
 
@@ -17,6 +18,7 @@ int parse_cond_s(char *op, int shift_s)
     int len = strlen(op) - shift_s;
     char ch2 = toupper(op[len-1]);
     char ch1 = toupper(op[len-2]);
+    printf("%c%c", ch1, ch2);
     switch (ch2)
     {
     case 'Q': return EQ;
